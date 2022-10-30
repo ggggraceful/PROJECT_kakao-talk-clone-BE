@@ -1,4 +1,4 @@
-package com.sparta.kakaotalkbackend.dto;
+package com.sparta.kakaotalkbackend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
