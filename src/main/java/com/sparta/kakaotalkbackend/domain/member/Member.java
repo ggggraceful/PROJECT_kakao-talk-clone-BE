@@ -1,37 +1,46 @@
 package com.sparta.kakaotalkbackend.domain.member;
 
-import com.sparta.kakaotalkbackend.exception.ErrorCode;
-import com.sparta.kakaotalkbackend.exception.GlobalException;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.Optional;
 
+@Builder
+@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_id")
+	private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+	@Column(nullable = false, unique = true)
+	private String username;
 
-    @Column
-    private String nickname;
+	@Column(nullable = false)
+	private String nickname;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(nullable = false) // &&&& default 이미지 저장
+	private String image;
 
-    @Column
-    private String image;
+	@JsonIgnore
+	@Column(nullable = false)
+	private String password;
 
-    @Column
-    private String status;
+	@Column
+	private String status;
+
+	public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
+		return passwordEncoder.matches(password, this.password);
+	}
 
     public void update(ProfileUpdateRequest profileupdateRequest) {
         this.nickname = profileupdateRequest.getNickname();
