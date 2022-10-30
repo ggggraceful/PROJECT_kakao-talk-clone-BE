@@ -29,11 +29,11 @@ public class JwtProvider {
 
 	private final Key key;
 
-	private final UserDetailServiceImp userDetailServiceImp;
+	private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-	public JwtProvider(UserDetailServiceImp userDetailServiceImp) {
+	public JwtProvider(UserDetailsServiceImpl userDetailsServiceImpl) {
 		this.key = Keys.hmacShaKeyFor(SECRET.getBytes());
-		this.userDetailServiceImp = userDetailServiceImp;
+		this.userDetailsServiceImpl = userDetailsServiceImpl;
 	}
 
 	// 토큰만들기
@@ -61,7 +61,7 @@ public class JwtProvider {
 	// 권한정보받기
 	public Authentication getAuthentication(String token) {
 		Claims claims = parseClaims(token);
-		UserDetails userDetails = userDetailServiceImp.loadUserByUsername(claims.getSubject());
+		UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(claims.getSubject());
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
@@ -78,7 +78,7 @@ public class JwtProvider {
 		if (authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
 			return null;
 		}
-		return ((UserDetailImp) authentication.getPrincipal()).getMember();
+		return ((UserDetailsImpl) authentication.getPrincipal()).getMember();
 	}
 
 	// 토큰 검증
