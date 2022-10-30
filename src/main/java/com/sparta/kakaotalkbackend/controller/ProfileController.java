@@ -1,11 +1,12 @@
 package com.sparta.kakaotalkbackend.controller;
 
 import com.sparta.kakaotalkbackend.domain.ResponseDto;
-import com.sparta.kakaotalkbackend.domain.member.Member;
+import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.ProfileUpdateRequest;
-import com.sparta.kakaotalkbackend.domain.member.MemberResponse;
+import com.sparta.kakaotalkbackend.jwt.UserDetailsImpl;
 import com.sparta.kakaotalkbackend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +17,8 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping // @AuthenticationPrincipal -> UserDetailsImpl 만들어지면 넣기
-    public ResponseDto<MemberResponse> getMyProfile(Member member) {
-        return profileService.getMyProfile(member);
+    public ResponseDto<MemberResponseDto> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return profileService.getMyProfile(userDetails.getMember());
     }
 
     /*
@@ -27,9 +28,9 @@ public class ProfileController {
      */
 
     @PutMapping// @AuthenticationPrincipal -> UserDetailsImpl 만들어지면 넣기
-    public ResponseDto<MemberResponse> updateMyProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
-                                                       Member member) {
-        return profileService.updateMyProfile(profileUpdateRequest, member);
+    public ResponseDto<MemberResponseDto> updateMyProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return profileService.updateMyProfile(profileUpdateRequest, userDetails.getMember());
     }
 
 

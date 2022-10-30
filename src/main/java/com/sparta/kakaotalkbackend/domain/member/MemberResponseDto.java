@@ -15,5 +15,12 @@ public class MemberResponseDto {
 	private String username;
 	private String nickname;
 	private String image;
+	private String status;
 
+	public MemberResponseDto(Member member) {
+		this.username = member.getUsername();
+		this.nickname = member.getNickname();
+		this.image = member.getImage();
+		this.status = member.getStatus();
+	}
 }

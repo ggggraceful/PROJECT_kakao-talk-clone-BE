@@ -18,7 +18,7 @@ public class WebSecurityConfig {
 
 	private final JwtProvider jwtProvider;
 
-	//암호화 하지않으면 security에서 로그인을 막음
+	//암호화 하지않으면 security 에서 로그인을 막음
 	@Bean
 	public BCryptPasswordEncoder encodePassword() {
 

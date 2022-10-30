@@ -11,7 +11,6 @@ import com.sparta.kakaotalkbackend.jwt.JwtProvider;
 import com.sparta.kakaotalkbackend.repository.MemberRepository;
 import com.sparta.kakaotalkbackend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Service
 @RequiredArgsConstructor
