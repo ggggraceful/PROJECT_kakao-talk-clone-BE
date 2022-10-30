@@ -1,5 +1,6 @@
 package com.sparta.kakaotalkbackend.domain.member;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +35,17 @@ public class Member {
 	@Column(nullable = false)
 	private String password;
 
+	@Column
+	private String status;
+
 	public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
 		return passwordEncoder.matches(password, this.password);
 	}
+
+    public void update(ProfileUpdateRequest profileupdateRequest) {
+        this.nickname = profileupdateRequest.getNickname();
+        this.image = profileupdateRequest.getImage();
+        this.status = profileupdateRequest.getStatus();
+    }
 
 }
