@@ -12,7 +12,5 @@ public class ProfileUpdateRequest {
 
     private String nickname;
 
-    private String image;
-
     private String status;
 }

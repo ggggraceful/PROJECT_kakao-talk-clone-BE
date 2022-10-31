@@ -40,7 +40,7 @@ public class MemberService {
 
 	//회원가입
 	@Transactional
-	public ResponseDto<?> registerUser(MemberRequestDto memberRequestDto) {
+	public ResponseDto<MemberResponseDto> registerUser(MemberRequestDto memberRequestDto) {
 
 		//중복처리
 		if(null != isPresentMember(memberRequestDto.getUsername())){
@@ -70,7 +70,7 @@ public class MemberService {
 	}
 
 	//로그인
-	public ResponseDto<?> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+	public ResponseDto<MemberResponseDto> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
 
 		Member member = isPresentMember(signinRequestDto.getUsername());
 
