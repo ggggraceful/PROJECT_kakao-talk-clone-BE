@@ -5,7 +5,6 @@ import com.sparta.kakaotalkbackend.domain.jwt.RefreshToken;
 import com.sparta.kakaotalkbackend.domain.jwt.TokenDto;
 import com.sparta.kakaotalkbackend.domain.member.Member;
 import com.sparta.kakaotalkbackend.domain.member.MemberRequestDto;
-import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.SigninRequestDto;
 import com.sparta.kakaotalkbackend.jwt.JwtProvider;
 import com.sparta.kakaotalkbackend.repository.MemberRepository;
@@ -31,7 +30,6 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final  MultipartFile multipartFile;
 	private final AmazonS3ResourceStorage amazonS3ResourceStorage;
 	private final JwtProvider jwtProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -45,7 +43,7 @@ public class MemberService {
 
 	//회원가입
 	@Transactional
-	public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto) {
+	public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
 
 
 		//중복처리
