@@ -5,7 +5,6 @@ import com.sparta.kakaotalkbackend.domain.jwt.RefreshToken;
 import com.sparta.kakaotalkbackend.domain.jwt.TokenDto;
 import com.sparta.kakaotalkbackend.domain.member.Member;
 import com.sparta.kakaotalkbackend.domain.member.MemberRequestDto;
-import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.SigninRequestDto;
 import com.sparta.kakaotalkbackend.jwt.JwtProvider;
 import com.sparta.kakaotalkbackend.repository.MemberRepository;
@@ -44,7 +43,8 @@ public class MemberService {
 
 	//회원가입
 	@Transactional
-	public ResponseDto<MemberResponseDto> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
+	public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
+
 
 		//중복처리
 		if(null != isPresentMember(memberRequestDto.getUsername())){
@@ -70,15 +70,7 @@ public class MemberService {
 				.password(passwordEncoder.encode(memberRequestDto.getPassword()))
 				.build();
 		memberRepository.save(member);
-		return ResponseDto.success(
-				MemberResponseDto.builder()
-						.id(member.getId())
-						.username(member.getUsername())
-						.nickname(member.getNickname())
-						.image(member.getImage())
-						.status(member.getStatus())
-						.build()
-		);
+		return ResponseDto.success("회원가입 완료");
 	}
 
 
@@ -92,7 +84,7 @@ public class MemberService {
 
 
 	//로그인
-	public ResponseDto<MemberResponseDto> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+	public ResponseDto<String> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
 
 		Member member = isPresentMember(signinRequestDto.getUsername());
 
@@ -126,13 +118,6 @@ public class MemberService {
 		httpServletResponse.addHeader("Access_Token", tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
 		httpServletResponse.addHeader("Refresh_Token", tokenDto.getRefreshToken());
 
-		return ResponseDto.success(
-				MemberResponseDto.builder()
-						.id(member.getId())
-						.username(member.getUsername())
-						.nickname(member.getNickname())
-						.image(member.getImage())
-						.build()
-		);
+		return ResponseDto.success("로그인 성공");
 	}
 }
