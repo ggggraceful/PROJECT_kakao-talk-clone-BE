@@ -22,10 +22,8 @@ public class ProfileService {
     마이 프로필 조회
      */
     public ResponseDto<MemberResponseDto> getMyProfile(Member member) {
-
         check.memberExist(member);
         return ResponseDto.success(new MemberResponseDto(member));
-
     }
 
     /*
@@ -36,9 +34,7 @@ public class ProfileService {
                                                           MultipartFile multipartFile,
                                                           Member member) {
         check.memberExist(member);
-
         member.update(profileUpdateRequest);
-
         return ResponseDto.success(new MemberResponseDto(member));
     }
 }

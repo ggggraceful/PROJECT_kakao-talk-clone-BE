@@ -15,9 +15,8 @@ spring:
     url: jdbc:mysql://kakao-clone-database.czslwzgjkozy.ap-northeast-2.rds.amazonaws.com:3306/kakao_clone_database
     password: yuns980603
   jpa:
-    properties:
-      hibernate:
-        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
 
 #  h2:
 #    console:

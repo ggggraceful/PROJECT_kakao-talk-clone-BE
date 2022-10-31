@@ -47,5 +47,4 @@ public class Member {
         this.image = profileupdateRequest.getImage();
         this.status = profileupdateRequest.getStatus();
     }
-
 }
