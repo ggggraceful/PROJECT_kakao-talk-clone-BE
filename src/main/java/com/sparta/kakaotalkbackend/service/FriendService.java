@@ -3,6 +3,7 @@ package com.sparta.kakaotalkbackend.service;
 import com.sparta.kakaotalkbackend.domain.ResponseDto;
 import com.sparta.kakaotalkbackend.domain.friend.Friend;
 import com.sparta.kakaotalkbackend.domain.friend.FriendRequestDto;
+import com.sparta.kakaotalkbackend.domain.friend.FriendResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.Member;
 import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.repository.FriendRepository;
@@ -27,7 +28,7 @@ public class FriendService {
     }
 
     // 친구 찾기 + 추가
-    public ResponseDto<String> addFriend (Member member, FriendRequestDto requestDto){
+    public ResponseDto<FriendResponseDto> addFriend (Member member, FriendRequestDto requestDto){
         // memberRepository에서 등록된 회원 username으로 찾기
         Optional<Member> findFriend = memberRepository.findByUsername(requestDto.getUsername());
         // 찾으려는 유저가 없거나, 본인의 username으로 찾으려 할 때 예외처리
@@ -47,7 +48,16 @@ public class FriendService {
                 .status(findFriend.get().getStatus())
                 .build();
         friendRepository.save(friend);
-        return ResponseDto.success(friend.getNickname() +"님을 친구추가했습니다");
+        return ResponseDto.success(
+                FriendResponseDto.builder()
+                        .id(friend.getId())
+                        .myUsername(member.getUsername())
+                        .username(findFriend.get().getUsername())
+                        .nickname(findFriend.get().getNickname())
+                        .image(findFriend.get().getImage())
+                        .status(findFriend.get().getStatus())
+                        .build()
+        );
     }
 
     // 친구 목록 조회
@@ -61,7 +71,7 @@ public class FriendService {
                     MemberResponseDto.builder()
                             .id((friend.getId()))
                             .username(friend.getUsername())
-                            .nickname(friend.getNickname()) // 수정 nickname 추가
+                            .nickname(friend.getNickname())
                             .image(friend.getImage())
                             .status(friend.getStatus())
                             .build()

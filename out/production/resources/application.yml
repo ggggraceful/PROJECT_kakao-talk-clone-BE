@@ -17,6 +17,21 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+<<<<<<< HEAD
+
+#  h2:
+#    console:
+#      enabled: 'true'
+#  datasource:
+#    username: sa
+#    url: jdbc:h2:mem:testdb
+#    password: ''
+#  jpa:
+#    properties:
+#      hibernate:
+#        ddl-auto: update
+=======
+>>>>>>> 3614a272b8140e547c9223f76eeeee8c67753271
 
 # 아마존 s3
 cloud:
