@@ -31,6 +31,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final  MultipartFile multipartFile;
 	private final AmazonS3ResourceStorage amazonS3ResourceStorage;
 	private final JwtProvider jwtProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -86,7 +87,7 @@ public class MemberService {
 
 
 	//로그인
-	public ResponseDto<MemberResponseDto> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+	public ResponseDto<String> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
 
 		Member member = isPresentMember(signinRequestDto.getUsername());
 
