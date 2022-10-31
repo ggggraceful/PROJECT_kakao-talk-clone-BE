@@ -22,7 +22,7 @@ public class MemberController {
     //로그인
 
     @PostMapping("/signup")
-    public ResponseDto<MemberResponseDto> signup(@RequestPart @Valid String username,
+    public ResponseDto<String> signup(@RequestPart @Valid String username,
                                                  @RequestPart @Valid String nickname,
                                                  @RequestPart @Valid String password,
                                                  @RequestPart @Valid String passwordCheck,
@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @PostMapping("/signin")
-    public ResponseDto<MemberResponseDto> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+    public ResponseDto<String> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
         return memberService.signin(signinRequestDto, httpServletResponse);
     }
 
