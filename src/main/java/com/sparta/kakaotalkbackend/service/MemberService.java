@@ -60,7 +60,6 @@ public class MemberService {
 		이미지 업로드
 		 */
 		String image = createPath(multipartFile);
-		System.out.println(image);
 		amazonS3ResourceStorage.store(image, multipartFile);
 
 		Member member = Member.builder()

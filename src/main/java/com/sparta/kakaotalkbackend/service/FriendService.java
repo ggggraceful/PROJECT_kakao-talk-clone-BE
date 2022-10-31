@@ -32,7 +32,7 @@ public class FriendService {
         // memberRepository에서 등록된 회원 username으로 찾기
         Optional<Member> findFriend = memberRepository.findByUsername(requestDto.getUsername());
         // 찾으려는 유저가 없거나, 본인의 username으로 찾으려 할 때 예외처리
-        if(!findFriend.isPresent() || findFriend.get().getId() == member.getId()){
+        if(findFriend.isEmpty() || findFriend.get().getId().equals(member.getId())){
             return ResponseDto.fail(404, "사용자를 찾을 수 없습니다.", "Not Found");
         }
         // 이미 친구로 등록되어있을 경우 예외처리
