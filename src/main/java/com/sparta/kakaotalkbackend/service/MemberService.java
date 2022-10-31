@@ -40,7 +40,7 @@ public class MemberService {
 
 	//회원가입
 	@Transactional
-	public ResponseDto<?> registerUser(MemberRequestDto memberRequestDto) {
+	public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto) {
 
 		//중복처리
 		if(null != isPresentMember(memberRequestDto.getUsername())){
@@ -59,14 +59,7 @@ public class MemberService {
 				.password(passwordEncoder.encode(memberRequestDto.getPassword()))
 				.build();
 		memberRepository.save(member);
-		return ResponseDto.success(
-				MemberResponseDto.builder()
-						.id(member.getId())
-						.username(member.getUsername())
-						.nickname(member.getNickname())
-						.image(member.getImage())
-						.build()
-		);
+		return ResponseDto.success("회원가입 완료");
 	}
 
 	//로그인
@@ -104,13 +97,6 @@ public class MemberService {
 		httpServletResponse.addHeader("Access_Token", tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
 		httpServletResponse.addHeader("Refresh_Token", tokenDto.getRefreshToken());
 
-		return ResponseDto.success(
-				MemberResponseDto.builder()
-						.id(member.getId())
-						.username(member.getUsername())
-						.nickname(member.getNickname())
-						.image(member.getImage())
-						.build()
-		);
+		return ResponseDto.success("로그인 성공");
 	}
 }
