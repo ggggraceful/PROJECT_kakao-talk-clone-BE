@@ -1,13 +1,13 @@
 package com.sparta.kakaotalkbackend.controller;
 
 import com.sparta.kakaotalkbackend.domain.ResponseDto;
+import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.SigninRequestDto;
 import com.sparta.kakaotalkbackend.domain.member.MemberRequestDto;
 import com.sparta.kakaotalkbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -16,18 +16,26 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
 
-	private final MemberService memberService;
+    private final MemberService memberService;
 
-	//회원가입
-	@PostMapping("/signup")
-	public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto memberRequestDto) {
-		return memberService.registerUser(memberRequestDto);
-	}
+    //회원가입
+    //로그인
 
-	//로그인
-	@PostMapping("/signin")
-	public ResponseDto<?> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse){
-		return memberService.signin(signinRequestDto, httpServletResponse);
-	}
+    @PostMapping("/signup")
+    public ResponseDto<MemberResponseDto> signup(@RequestPart @Valid String username,
+                                                 @RequestPart @Valid String nickname,
+                                                 @RequestPart @Valid String password,
+                                                 @RequestPart @Valid String passwordCheck,
+                                                 @RequestPart @Valid String status,
+                                                 @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+
+        MemberRequestDto requestDto = new MemberRequestDto(username, nickname, status, password, passwordCheck);
+        return memberService.registerUser(requestDto, multipartFile);
+    }
+
+    @PostMapping("/signin")
+    public ResponseDto<MemberResponseDto> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+        return memberService.signin(signinRequestDto, httpServletResponse);
+    }
 
 }

@@ -9,6 +9,7 @@ import com.sparta.kakaotalkbackend.util.Check;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,9 @@ public class ProfileService {
     마이 프로필 수정
      */
     @Transactional
-    public ResponseDto<MemberResponseDto> updateMyProfile(ProfileUpdateRequest profileUpdateRequest, Member member) {
+    public ResponseDto<MemberResponseDto> updateMyProfile(ProfileUpdateRequest profileUpdateRequest,
+                                                          MultipartFile multipartFile,
+                                                          Member member) {
         check.memberExist(member);
 
         member.update(profileUpdateRequest);

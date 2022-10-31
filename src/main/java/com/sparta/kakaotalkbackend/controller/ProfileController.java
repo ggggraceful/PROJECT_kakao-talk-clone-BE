@@ -8,6 +8,7 @@ import com.sparta.kakaotalkbackend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping // @AuthenticationPrincipal -> UserDetailsImpl 만들어지면 넣기
+    @GetMapping
     public ResponseDto<MemberResponseDto> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return profileService.getMyProfile(userDetails.getMember());
     }
@@ -27,10 +28,11 @@ public class ProfileController {
     예를 들어 이미지만 바꾸고 상태메세지는 안바꾸는 경우......................
      */
 
-    @PutMapping// @AuthenticationPrincipal -> UserDetailsImpl 만들어지면 넣기
-    public ResponseDto<MemberResponseDto> updateMyProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest,
+    @PutMapping
+    public ResponseDto<MemberResponseDto> updateMyProfile(@RequestPart ProfileUpdateRequest profileUpdateRequest,
+                                                          @RequestPart(value = "file", required = false) MultipartFile multipartFile,
                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return profileService.updateMyProfile(profileUpdateRequest, userDetails.getMember());
+        return profileService.updateMyProfile(profileUpdateRequest, multipartFile, userDetails.getMember());
     }
 
 
