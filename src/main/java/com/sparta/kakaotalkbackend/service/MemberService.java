@@ -10,12 +10,15 @@ import com.sparta.kakaotalkbackend.domain.member.SigninRequestDto;
 import com.sparta.kakaotalkbackend.jwt.JwtProvider;
 import com.sparta.kakaotalkbackend.repository.MemberRepository;
 import com.sparta.kakaotalkbackend.repository.RefreshTokenRepository;
+import com.sparta.kakaotalkbackend.util.AmazonS3ResourceStorage;
+import com.sparta.kakaotalkbackend.util.MultipartUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -28,6 +31,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final AmazonS3ResourceStorage amazonS3ResourceStorage;
 	private final JwtProvider jwtProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -40,7 +44,7 @@ public class MemberService {
 
 	//회원가입
 	@Transactional
-	public ResponseDto<?> registerUser(MemberRequestDto memberRequestDto) {
+	public ResponseDto<MemberResponseDto> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
 
 		//중복처리
 		if(null != isPresentMember(memberRequestDto.getUsername())){
@@ -52,10 +56,17 @@ public class MemberService {
 			return ResponseDto.fail(409, "비밀번호가 일치하지 않습니다", "Conflict");
 		}
 
+		/*
+		이미지 업로드
+		 */
+		String image = createPath(multipartFile);
+		amazonS3ResourceStorage.store(image, multipartFile);
+
 		Member member = Member.builder()
 				.username(memberRequestDto.getUsername())
 				.nickname(memberRequestDto.getNickname())
-				.image(memberRequestDto.getImage())
+				.image(image)
+				.status(memberRequestDto.getStatus())
 				.password(passwordEncoder.encode(memberRequestDto.getPassword()))
 				.build();
 		memberRepository.save(member);
@@ -65,12 +76,23 @@ public class MemberService {
 						.username(member.getUsername())
 						.nickname(member.getNickname())
 						.image(member.getImage())
+						.status(member.getStatus())
 						.build()
 		);
 	}
 
+
+	// 이미지 path 설정
+	private String createPath(MultipartFile multipartFile) {
+		final String fileId = MultipartUtil.createFileId();
+		final String format = MultipartUtil.getFormat(multipartFile.getContentType());
+
+		return MultipartUtil.createPath(fileId, format);
+	}
+
+
 	//로그인
-	public ResponseDto<?> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+	public ResponseDto<MemberResponseDto> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
 
 		Member member = isPresentMember(signinRequestDto.getUsername());
 
