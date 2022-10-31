@@ -27,6 +27,7 @@ application.yml
 # build
 .gradle
 build/
+out/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
