@@ -20,6 +20,11 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final MemberRepository memberRepository;
 
+    public Friend isPresentFriend(String username) {
+        Optional<Friend> optionalFriend = friendRepository.findByUsername(username);
+        return optionalFriend.orElse(null);
+    }
+
     // 친구 찾기 + 추가
     public ResponseDto<String> addFriend (Member member, FriendRequestDto requestDto){
         // memberRepository에서 등록된 회원 username으로 찾기
@@ -27,6 +32,9 @@ public class FriendService {
         // 찾으려는 유저가 없거나, 본인의 username으로 찾으려 할 때 예외처리
         if(!findFriend.isPresent() || findFriend.get().getId() == member.getId()){
             return ResponseDto.fail(404, "사용자를 찾을 수 없습니다.", "Not Found");
+        }
+        if(null != isPresentFriend(findFriend.get().getUsername())) {
+            return ResponseDto.fail(404, "이미 등록된 친구입니다.", "Not Found");
         }
 
         Friend friend = Friend.builder()
