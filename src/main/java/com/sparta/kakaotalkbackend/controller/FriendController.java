@@ -2,6 +2,7 @@ package com.sparta.kakaotalkbackend.controller;
 
 import com.sparta.kakaotalkbackend.domain.ResponseDto;
 import com.sparta.kakaotalkbackend.domain.friend.FriendRequestDto;
+import com.sparta.kakaotalkbackend.domain.friend.FriendResponseDto;
 import com.sparta.kakaotalkbackend.domain.member.MemberResponseDto;
 import com.sparta.kakaotalkbackend.jwt.UserDetailsImpl;
 import com.sparta.kakaotalkbackend.service.FriendService;
@@ -31,7 +32,7 @@ public class FriendController {
 
     // 친구 추가+검색
     @PostMapping("/friends")
-    public ResponseDto<String> addFriend(@AuthenticationPrincipal UserDetailsImpl userDtails, @RequestBody FriendRequestDto requestDto) {
+    public ResponseDto<FriendResponseDto> addFriend(@AuthenticationPrincipal UserDetailsImpl userDtails, @RequestBody FriendRequestDto requestDto) {
         return friendService.addFriend(userDtails.getMember(), requestDto);
     }
 
