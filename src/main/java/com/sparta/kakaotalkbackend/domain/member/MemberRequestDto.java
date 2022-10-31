@@ -33,4 +33,5 @@ public class MemberRequestDto {
 	@NotBlank
 	private String passwordCheck;
 
+
 }

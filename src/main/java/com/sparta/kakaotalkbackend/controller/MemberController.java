@@ -16,19 +16,26 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
 
-	private final MemberService memberService;
+    private final MemberService memberService;
 
-	//회원가입
-	@PostMapping("/signup")
-	public ResponseDto<MemberResponseDto> signup(@RequestPart(value = "dto") @Valid MemberRequestDto memberRequestDto,
-												 @RequestPart(value = "file", required = false)MultipartFile multipartFile) {
-		return memberService.registerUser(memberRequestDto, multipartFile);
-	}
+    //회원가입
+    //로그인
 
-	//로그인
-	@PostMapping("/signin")
-	public ResponseDto<MemberResponseDto> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse){
-		return memberService.signin(signinRequestDto, httpServletResponse);
-	}
+    @PostMapping("/signup")
+    public ResponseDto<MemberResponseDto> signup(@RequestPart @Valid String username,
+                                                 @RequestPart @Valid String nickname,
+                                                 @RequestPart @Valid String password,
+                                                 @RequestPart @Valid String passwordCheck,
+                                                 @RequestPart @Valid String status,
+                                                 @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+
+        MemberRequestDto requestDto = new MemberRequestDto(username, nickname, status, password, passwordCheck);
+        return memberService.registerUser(requestDto, multipartFile);
+    }
+
+    @PostMapping("/signin")
+    public ResponseDto<MemberResponseDto> signin(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+        return memberService.signin(signinRequestDto, httpServletResponse);
+    }
 
 }
