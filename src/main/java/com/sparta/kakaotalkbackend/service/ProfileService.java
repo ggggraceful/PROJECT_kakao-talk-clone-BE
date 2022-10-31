@@ -32,7 +32,9 @@ public class ProfileService {
     마이 프로필 수정
      */
     @Transactional
-    public ResponseDto<MemberResponseDto> updateMyProfile(ProfileUpdateRequest profileUpdateRequest, MultipartFile multipartFile, Member member) {
+    public ResponseDto<MemberResponseDto> updateMyProfile(ProfileUpdateRequest profileUpdateRequest,
+                                                          MultipartFile multipartFile,
+                                                          Member member) {
         check.memberExist(member);
 
         member.update(profileUpdateRequest);
