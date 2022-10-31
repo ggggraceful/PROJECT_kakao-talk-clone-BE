@@ -6,9 +6,8 @@ import com.sparta.kakaotalkbackend.domain.member.SigninRequestDto;
 import com.sparta.kakaotalkbackend.domain.member.MemberRequestDto;
 import com.sparta.kakaotalkbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -21,8 +20,9 @@ public class MemberController {
 
 	//회원가입
 	@PostMapping("/signup")
-	public ResponseDto<MemberResponseDto> signup(@RequestBody @Valid MemberRequestDto memberRequestDto) {
-		return memberService.registerUser(memberRequestDto);
+	public ResponseDto<MemberResponseDto> signup(@RequestPart(value = "dto") @Valid MemberRequestDto memberRequestDto,
+												 @RequestPart(value = "file", required = false)MultipartFile multipartFile) {
+		return memberService.registerUser(memberRequestDto, multipartFile);
 	}
 
 	//로그인

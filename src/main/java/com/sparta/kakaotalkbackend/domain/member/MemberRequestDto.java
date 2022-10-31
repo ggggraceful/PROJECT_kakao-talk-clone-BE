@@ -20,8 +20,11 @@ public class MemberRequestDto {
 	@NotBlank
 	private String nickname;
 
-	@NotBlank
-	private String image;
+//	@NotBlank
+//	private String image;
+
+	private String status;
+
 
 	@NotBlank
 	@Pattern(regexp = "[a-z0-9]{4,32}", message = "비밀번호양식을 확인해주세요!")
