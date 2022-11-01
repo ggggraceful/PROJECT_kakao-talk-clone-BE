@@ -27,87 +27,88 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
 
-	private final MemberRepository memberRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final RefreshTokenRepository refreshTokenRepository;
-	private final AmazonS3ResourceStorage amazonS3ResourceStorage;
-	private final JwtProvider jwtProvider;
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final AmazonS3ResourceStorage amazonS3ResourceStorage;
+    private final JwtProvider jwtProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 
-	//가입한 회원인지 아닌지 유효성 검사해주는 method
-	public Member isPresentMember(String username) {
-		Optional<Member> optionalMember = memberRepository.findByUsername(username);
-		return optionalMember.orElse(null);
-	}
+    //가입한 회원인지 아닌지 유효성 검사해주는 method
+    public Member isPresentMember(String username) {
+        Optional<Member> optionalMember = memberRepository.findByUsername(username);
+        return optionalMember.orElse(null);
+    }
 
-	//회원가입
-	@Transactional
-	public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
+    //회원가입
+    @Transactional
+    public ResponseDto<String> registerUser(MemberRequestDto memberRequestDto, MultipartFile multipartFile) {
 
 
-		//중복처리
-		if(null != isPresentMember(memberRequestDto.getUsername())){
-			return ResponseDto.fail(409, "중복 아이디입니다", "Conflict");
-		}
+        //중복처리
+        if (null != isPresentMember(memberRequestDto.getUsername())) {
+            return ResponseDto.fail(409, "중복 아이디입니다", "Conflict");
+        }
 
-		//비밀번호 확인
-		if(!memberRequestDto.getPassword().equals(memberRequestDto.getPasswordCheck())){
-			return ResponseDto.fail(409, "비밀번호가 일치하지 않습니다", "Conflict");
-		}
+        //비밀번호 확인
+        if (!memberRequestDto.getPassword().equals(memberRequestDto.getPasswordCheck())) {
+            return ResponseDto.fail(409, "비밀번호가 일치하지 않습니다", "Conflict");
+        }
 
 		/*
 		이미지 업로드
 		 */
-		String image = MultipartUtil.createPath(multipartFile);
-		amazonS3ResourceStorage.store(image, multipartFile);
+        String image = MultipartUtil.createPath(multipartFile);
+        amazonS3ResourceStorage.store(image, multipartFile);
 
-		Member member = Member.builder()
-				.username(memberRequestDto.getUsername())
-				.nickname(memberRequestDto.getNickname())
-				.image(image)
-				.status(memberRequestDto.getStatus())
-				.password(passwordEncoder.encode(memberRequestDto.getPassword()))
-				.build();
-		memberRepository.save(member);
-		return ResponseDto.success("회원가입 완료");
-	}
 
-	//로그인
-	public ResponseDto<String> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
+        Member member = Member.builder()
+                .username(memberRequestDto.getUsername())
+                .nickname(memberRequestDto.getNickname())
+                .image("https://kang--bucket.s3.ap-northeast-2.amazonaws.com/" + image)
+                .status(memberRequestDto.getStatus())
+                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
+                .build();
+        memberRepository.save(member);
+        return ResponseDto.success("회원가입 완료");
+    }
 
-		Member member = isPresentMember(signinRequestDto.getUsername());
+    //로그인
+    public ResponseDto<String> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {
 
-		//사용자가 있는지 여부
-		if(null == member){
-			return ResponseDto.fail(404, "사용자를 찾을 수 없습니다.", "Not Found");
-		}
+        Member member = isPresentMember(signinRequestDto.getUsername());
 
-		//비밀번호가 맞는지 확인
-		if(!member.validatePassword(passwordEncoder, signinRequestDto.getPassword())){
-			return ResponseDto.fail(409, "비밀번호가 일치하지 않습니다", "Conflict");
-		}
+        //사용자가 있는지 여부
+        if (null == member) {
+            return ResponseDto.fail(404, "사용자를 찾을 수 없습니다.", "Not Found");
+        }
 
-		// 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-		UsernamePasswordAuthenticationToken authenticationToken
-				= new UsernamePasswordAuthenticationToken(signinRequestDto.getUsername(), signinRequestDto.getPassword());
+        //비밀번호가 맞는지 확인
+        if (!member.validatePassword(passwordEncoder, signinRequestDto.getPassword())) {
+            return ResponseDto.fail(409, "비밀번호가 일치하지 않습니다", "Conflict");
+        }
 
-		// 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
-		//    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
+        UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(signinRequestDto.getUsername(), signinRequestDto.getPassword());
 
-		TokenDto tokenDto = jwtProvider.generateTokenDto(authentication);
+        // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
+        //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-		RefreshToken refreshToken = RefreshToken.builder()
-				.key(authentication.getName())
-				.value(tokenDto.getRefreshToken())
-				.build();
+        TokenDto tokenDto = jwtProvider.generateTokenDto(authentication);
 
-		refreshTokenRepository.save(refreshToken);
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(authentication.getName())
+                .value(tokenDto.getRefreshToken())
+                .build();
 
-		httpServletResponse.addHeader("Access_Token", tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
-		httpServletResponse.addHeader("Refresh_Token", tokenDto.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
 
-		return ResponseDto.success("로그인 성공");
-	}
+        httpServletResponse.addHeader("Access_Token", tokenDto.getGrantType() + " " + tokenDto.getAccessToken());
+        httpServletResponse.addHeader("Refresh_Token", tokenDto.getRefreshToken());
+
+        return ResponseDto.success("로그인 성공");
+    }
 }
