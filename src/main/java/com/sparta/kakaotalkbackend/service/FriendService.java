@@ -44,7 +44,7 @@ public class FriendService {
                 .myUsername(member.getUsername())
                 .username(findFriend.get().getUsername())
                 .nickname(findFriend.get().getNickname())
-                .image("https://kang--bucket.s3.ap-northeast-2.amazonaws.com/" + findFriend.get().getImage())
+                .image(findFriend.get().getImage())
                 .status(findFriend.get().getStatus())
                 .build();
         friendRepository.save(friend);

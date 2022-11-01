@@ -33,14 +33,13 @@ public class ProfileService {
                                                           String status,
                                                           MultipartFile multipartFile,
                                                           Member member) {
-
-        if (nickname == null) nickname = member.getNickname();
-        if (status == null) status = member.getStatus();
+//
+//        if (nickname == null) nickname = member.getNickname();
+//        if (status == null) status = member.getStatus();
 
         String image = MultipartUtil.createPath(multipartFile);
-        if (image == null) image = member.getImage();
+//        if (image == null) image = member.getImage();
         amazonS3ResourceStorage.store(image, multipartFile);
-
         member.update(nickname, status, image);
         memberRepository.save(member);
         return ResponseDto.success(new MemberResponseDto(member));
