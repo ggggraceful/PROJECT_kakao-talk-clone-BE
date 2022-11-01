@@ -29,13 +29,16 @@ public class ProfileService {
     /*
     마이 프로필 수정
      */
-    @Transactional
     public ResponseDto<MemberResponseDto> updateMyProfile(String nickname,
                                                           String status,
                                                           MultipartFile multipartFile,
                                                           Member member) {
 
+        if (nickname == null) nickname = member.getNickname();
+        if (status == null) status = member.getStatus();
+
         String image = MultipartUtil.createPath(multipartFile);
+        if (image == null) image = member.getImage();
         amazonS3ResourceStorage.store(image, multipartFile);
 
         member.update(nickname, status, image);
