@@ -22,8 +22,8 @@ public class FriendService {
     private final MemberRepository memberRepository;
 
     // DB에 friend 데이터가 있는지 검사
-    public Friend isPresentFriend(String username) {
-        Optional<Friend> optionalFriend = friendRepository.findByUsername(username);
+    public Friend isPresentFriend(String username, String myUsername) {
+        Optional<Friend> optionalFriend = friendRepository.findByUsernameAndMyUsername(username, myUsername);
         return optionalFriend.orElse(null);
     }
 
@@ -36,7 +36,7 @@ public class FriendService {
             return ResponseDto.fail(404, "사용자를 찾을 수 없습니다.", "Not Found");
         }
         // 이미 친구로 등록되어있을 경우 예외처리
-        if (null != isPresentFriend(findFriend.get().getUsername())) {
+        if (null != isPresentFriend(findFriend.get().getUsername(), member.getUsername())) {
             return ResponseDto.fail(404, "이미 등록된 친구입니다.", "Not Found");
         }
 
