@@ -44,7 +44,7 @@ public class Member {
 
     public void update(String nickname, String status, String image) {
         this.nickname = nickname;
-        this.image = image;
+        this.image = "https://kang--bucket.s3.ap-northeast-2.amazonaws.com/" + image;
         this.status = status;
     }
 }
