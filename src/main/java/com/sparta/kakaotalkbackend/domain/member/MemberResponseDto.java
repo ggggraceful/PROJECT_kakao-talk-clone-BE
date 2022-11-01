@@ -18,9 +18,10 @@ public class MemberResponseDto {
 	private String status;
 
 	public MemberResponseDto(Member member) {
+		this.id = member.getId();
 		this.username = member.getUsername();
 		this.nickname = member.getNickname();
-		this.image = member.getImage();
+		this.image = "https://kang--bucket.s3.ap-northeast-2.amazonaws.com/" + member.getImage();
 		this.status = member.getStatus();
 	}
 }
