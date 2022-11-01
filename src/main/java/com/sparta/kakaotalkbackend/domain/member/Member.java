@@ -42,9 +42,9 @@ public class Member {
 		return passwordEncoder.matches(password, this.password);
 	}
 
-    public void update(ProfileUpdateRequest profileupdateRequest) {
-        this.nickname = profileupdateRequest.getNickname();
-        this.image = profileupdateRequest.getImage();
-        this.status = profileupdateRequest.getStatus();
+    public void update(String nickname, String status, String image) {
+        this.nickname = nickname;
+        this.image = image;
+        this.status = status;
     }
 }
