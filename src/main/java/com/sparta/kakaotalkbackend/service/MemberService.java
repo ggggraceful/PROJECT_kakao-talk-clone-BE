@@ -59,7 +59,7 @@ public class MemberService {
 		/*
 		이미지 업로드
 		 */
-		String image = createPath(multipartFile);
+		String image = MultipartUtil.createPath(multipartFile);
 		amazonS3ResourceStorage.store(image, multipartFile);
 
 		Member member = Member.builder()
@@ -72,16 +72,6 @@ public class MemberService {
 		memberRepository.save(member);
 		return ResponseDto.success("회원가입 완료");
 	}
-
-
-	// 이미지 path 설정
-	private String createPath(MultipartFile multipartFile) {
-		final String fileId = MultipartUtil.createFileId();
-		final String format = MultipartUtil.getFormat(multipartFile.getContentType());
-
-		return MultipartUtil.createPath(fileId, format);
-	}
-
 
 	//로그인
 	public ResponseDto<String> signin(SigninRequestDto signinRequestDto, HttpServletResponse httpServletResponse) {

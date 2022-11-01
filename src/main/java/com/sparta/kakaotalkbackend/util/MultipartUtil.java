@@ -1,6 +1,7 @@
 package com.sparta.kakaotalkbackend.util;
 
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -35,12 +36,13 @@ public class MultipartUtil {
         return null;
     }
 
-    /**
-     * 파일의 전체 경로를 생성합니다.
-     * @param fileId 생성된 파일 고유 ID
-     * @param format 확장자
-     */
-    public static String createPath(String fileId, String format) {
+    // 이미지 path 설정
+    public static String createPath(MultipartFile multipartFile) {
+        // fileId -> 생성된 파일 고유 ID
+        final String fileId = MultipartUtil.createFileId();
+        // format -> 확장자
+        final String format = MultipartUtil.getFormat(multipartFile.getContentType());
+
         return String.format("%s/%s.%s", BASE_DIR, fileId, format);
     }
 }
