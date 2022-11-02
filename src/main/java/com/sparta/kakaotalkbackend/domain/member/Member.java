@@ -47,4 +47,8 @@ public class Member {
         this.image = "https://kang--bucket.s3.ap-northeast-2.amazonaws.com/" + image;
         this.status = status;
     }
+	public void update(String nickname, String status) {
+		this.nickname = nickname;
+		this.status = status;
+	}
 }
