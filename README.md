@@ -87,6 +87,39 @@
 # 3. 시연 영상
 
 # 4-1. 트러블 슈팅 (윤시원)
+## 1) S3 RuntimeException Null
+로컬 환경에서는 잘 작동하는데, EC2 환경에서 배포했을 때 사진 업로드가 안되는 상황
+
+-> git bash 로 /Pictures 폴더 생성하여 해결
+
+## 2) 마이페이지 수정 이슈
+마이페이지 수정 시, 이미지파일을 업로드하지 않았을 때 처리에 대한 고민
+
+구현하려는 의도 : 원래 멤버가 가지고 있던 이미지 url을 가져온다.
+
+
+### multipartFile이 null일 경우 if문 처리
+
+그러나 확장자명이 .null로 적히는 문제가 발생했다.
+
+multipartFile == null조건문에서, sout으로 "null"을 찍어봤는데 콘솔에 적히지 않았다 => multipartFile == null이 적용되지 않고있음
+
+==null 말고 값이 비어있는 것을 확인할 수 있는 다른 방법을 찾아보았다.
+
+### multipartFile.isEmpty()사용
+
+multipartFile에서 지원하는 .isEmpty()메소드. 값이 비어있을 경우 true를 반환한다
+확장자 문제는 해결되었으나, 계속 빈 값의 파일을 등록할 시 imageUrl이 점점 길어지는 문제가 발생했다. (원래 있던 값이 리셋되지않고 계속 쌓임)
+
+
+
+### 추가 수정 : update메소드 추가
+업데이트 시,  image는 업데이트 하지 않는 메소드를 추가 (nickname과 status만 바꾸게함)
+
+## 3) 친구 추가 시 에러
+A유저가 B유저를 친구 추가하면 C유저는 B유저를 친구추가 하지 못하는 상황
+-> friend DB에 해당 id가 있으면 추가되지 않음
+-> findById 메소드쿼리를 findByMyUsernameAndId 로 변경
 
 # 4-2. 트러블 슈팅 (남궁은)
 
